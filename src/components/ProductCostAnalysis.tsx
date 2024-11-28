@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   LineChart,
   Line,
@@ -12,7 +11,6 @@ import {
 import { calculateTotalCost, calculateReasonableInterval } from '../utils/calculations';
 import { calculateCapacity, calculateAvailableHours } from '../utils/capacity';
 import { safeNumberFormat, safeCurrencyFormat, safePercentFormat, safeGetUnitType } from '../utils/safeAccess';
-import { LoadingState } from './LoadingState';
 import type { Plant, Product } from '../types';
 
 interface ProductCostAnalysisProps {
@@ -31,7 +29,7 @@ export function ProductCostAnalysis({ plant, product }: ProductCostAnalysisProps
 
   const productConfig = plant.products[product.id];
   const unitType = safeGetUnitType(plant);
-  
+
   if (!productConfig) {
     return (
       <div className="text-center text-gray-500 py-4">
@@ -65,14 +63,14 @@ export function ProductCostAnalysis({ plant, product }: ProductCostAnalysisProps
   const data: any[] = [];
   const interval = calculateReasonableInterval(capacity);
   let hasValidData = false;
-  
+
   for (let units = 0; units <= capacity; units += interval) {
     const result = calculateTotalCost({ [product.id]: units }, plant);
     if (typeof result.cost !== 'number' || isNaN(result.cost)) {
       console.warn('Failed to calculate costs for units:', units);
       continue;
     }
-    
+
     const { cost, breakdown } = result;
     if (typeof breakdown !== 'object') continue;
 
@@ -108,7 +106,7 @@ export function ProductCostAnalysis({ plant, product }: ProductCostAnalysisProps
     );
   }
 
-  const costTypes = data[0] && typeof data[0] === 'object' ? Object.keys(data[0]).filter(key => 
+  const costTypes = data[0] && typeof data[0] === 'object' ? Object.keys(data[0]).filter(key =>
     key !== 'units' && key !== 'totalCost' && key !== 'costPerUnit'
   ) : [];
 
@@ -128,7 +126,7 @@ export function ProductCostAnalysis({ plant, product }: ProductCostAnalysisProps
               label={{
                 value: `Production ${unitType}s`,
                 position: 'bottom',
-                offset: 20
+                offset: 30
               }}
             />
             <YAxis
@@ -207,7 +205,7 @@ export function ProductCostAnalysis({ plant, product }: ProductCostAnalysisProps
             const lastPoint = data[data.length - 1] || { totalCost: 0 };
             const cost = lastPoint[costType] || 0;
             const percentage = lastPoint.totalCost ? (cost / lastPoint.totalCost) * 100 : 0;
-            
+
             return (
               <div key={costType} className="flex justify-between">
                 <span className="text-blue-800">{costType}:</span>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Minus, Factory, Info } from 'lucide-react';
 import { AllocationTypeSelect } from './AllocationTypeSelect';
 import { ProductSpecificSelect } from './ProductSpecificSelect';
@@ -124,7 +124,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
           <div className="space-y-4">
             <AllocationTypeSelect
               value={cost.allocationType}
-              onChange={(allocationType) => updateCost(cost.id, { 
+              onChange={(allocationType) => updateCost(cost.id, {
                 allocationType,
                 specificToProduct: allocationType === 'product-specific' ? products[0]?.id : undefined,
                 productSpecificRates: allocationType === 'product-specific' ? [] : undefined
@@ -149,7 +149,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
             {cost.type === 'variable' && (
               <VariableCostInput
                 value={cost.costPerUnit || 0}
-                unitType={config.settings.unitType === 'other' ? config.settings.customUnitType || 'unit' : config.settings.unitType}
+                unitType={(config.settings?.unitType === 'other' ? config.settings?.customUnitType : config.settings?.unitType) || 'unit'}
                 onChange={(costPerUnit) => updateCost(cost.id, { costPerUnit })}
                 products={products}
                 productRates={cost.productSpecificRates}
@@ -165,7 +165,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                 baseUnits={cost.baseUnits || 0}
                 baseCost={cost.baseCost || 0}
                 scaleFactor={cost.scaleFactor || 1}
-                unitType={config.settings.unitType === 'other' ? config.settings.customUnitType || 'unit' : config.settings.unitType}
+                unitType={config.settings?.unitType === 'other' ? config.settings?.customUnitType || 'unit' : config.settings?.unitType || 'unit'}
                 onChange={(updates) => updateCost(cost.id, updates)}
               />
             )}
@@ -174,7 +174,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
               <StepFunctionInputs
                 ranges={cost.ranges || []}
                 stepType={cost.stepType || 'fixed'}
-                unitType={config.settings.unitType === 'other' ? config.settings.customUnitType || 'unit' : config.settings.unitType}
+                unitType={config.settings?.unitType === 'other' ? config.settings?.customUnitType || 'unit' : config.settings?.unitType || 'unit'}
                 products={products}
                 productRates={cost.productRangeRates}
                 onProductRatesChange={

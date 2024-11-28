@@ -1,6 +1,5 @@
-import React from 'react';
-import { Gauge } from 'lucide-react';
 import type { Plant, Product, TimeUnit } from '../types';
+import { safeGetUnitType } from '../utils/safeAccess';
 
 interface ProductRateConfigProps {
   plant: Plant;
@@ -13,7 +12,7 @@ const TIME_UNITS: TimeUnit[] = ['hour', 'day', 'week', 'month', 'year'];
 export function ProductRateConfig({ plant, product, onChange }: ProductRateConfigProps) {
   // Initialize product config if it doesn't exist
   const productConfig = plant.products[product.id] || {};
-  
+
   // Initialize rate with default values if it doesn't exist
   const rate = productConfig.rate || { units: 0, timeUnit: 'hour' as TimeUnit };
 
@@ -37,8 +36,8 @@ export function ProductRateConfig({ plant, product, onChange }: ProductRateConfi
   const calculateCapacity = (rateValue: number, timeUnit: TimeUnit) => {
     const { hoursPerDay, daysPerWeek, weeksPerYear } = operatingTime;
     const hoursPerYear = hoursPerDay * daysPerWeek * weeksPerYear;
-    const daysPerYear = daysPerWeek * weeksPerYear;
-    const monthsPerYear = weeksPerYear / 4.33; // Approximate weeks per month
+    // const daysPerYear = daysPerWeek * weeksPerYear;
+    // const monthsPerYear = weeksPerYear / 4.33; // Approximate weeks per month
 
     let unitsPerHour: number;
     switch (timeUnit) {
@@ -71,6 +70,7 @@ export function ProductRateConfig({ plant, product, onChange }: ProductRateConfi
 
   const capacities = calculateCapacity(rate?.units || 0, rate?.timeUnit || 'hour');
   const formatNumber = (num: number) => Math.round(num || 0).toLocaleString();
+  const unitType = safeGetUnitType(plant);
 
   return (
     <div className="space-y-4">
@@ -84,16 +84,16 @@ export function ProductRateConfig({ plant, product, onChange }: ProductRateConfi
             min="0"
             value={rate?.units || 0}
             onChange={(e) => handleRateChange('units', e.target.value)}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="c-input"
           />
           <select
             value={rate?.timeUnit || 'hour'}
             onChange={(e) => handleRateChange('timeUnit', e.target.value as TimeUnit)}
-            className="block w-40 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="c-input w-40"
           >
             {TIME_UNITS.map(unit => (
               <option key={unit} value={unit}>
-                per {unit}
+                Per {unit}
               </option>
             ))}
           </select>
@@ -106,25 +106,25 @@ export function ProductRateConfig({ plant, product, onChange }: ProductRateConfi
           <div className="flex justify-between">
             <span className="text-green-800">Daily Capacity:</span>
             <span className="text-green-900 font-medium">
-              {formatNumber(capacities.daily)} units
+              {formatNumber(capacities.daily)} { unitType }
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-green-800">Weekly Capacity:</span>
             <span className="text-green-900 font-medium">
-              {formatNumber(capacities.weekly)} units
+              {formatNumber(capacities.weekly)} { unitType }
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-green-800">Monthly Capacity:</span>
             <span className="text-green-900 font-medium">
-              {formatNumber(capacities.monthly)} units
+              {formatNumber(capacities.monthly)} { unitType }
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-green-800">Annual Capacity:</span>
             <span className="text-green-900 font-medium">
-              {formatNumber(capacities.yearly)} units
+              {formatNumber(capacities.yearly)} { unitType   }
             </span>
           </div>
         </div>

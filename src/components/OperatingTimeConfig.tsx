@@ -1,4 +1,3 @@
-import React from 'react';
 import { Clock } from 'lucide-react';
 import type { Plant } from '../types';
 
@@ -34,9 +33,9 @@ export function OperatingTimeConfig({ plant, onChange }: OperatingTimeConfigProp
             type="number"
             min="0"
             max="24"
-            value={plant.operatingTime.hoursPerDay}
+            value={plant.operatingTime?.hoursPerDay ?? 0}
             onChange={(e) => handleOperatingTimeChange('hoursPerDay', e.target.value)}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="c-input"
           />
         </div>
 
@@ -48,9 +47,9 @@ export function OperatingTimeConfig({ plant, onChange }: OperatingTimeConfigProp
             type="number"
             min="0"
             max="7"
-            value={plant.operatingTime.daysPerWeek}
+            value={plant.operatingTime?.daysPerWeek ?? 0}
             onChange={(e) => handleOperatingTimeChange('daysPerWeek', e.target.value)}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="c-input"
           />
         </div>
 
@@ -62,9 +61,9 @@ export function OperatingTimeConfig({ plant, onChange }: OperatingTimeConfigProp
             type="number"
             min="0"
             max="52"
-            value={plant.operatingTime.weeksPerYear}
+            value={plant.operatingTime?.weeksPerYear ?? 0}
             onChange={(e) => handleOperatingTimeChange('weeksPerYear', e.target.value)}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="c-input"
           />
         </div>
       </div>
@@ -76,9 +75,9 @@ export function OperatingTimeConfig({ plant, onChange }: OperatingTimeConfigProp
             <span className="text-blue-800">Hours per Year:</span>
             <span className="text-blue-900 font-medium">
               {Math.round(
-                plant.operatingTime.hoursPerDay *
-                plant.operatingTime.daysPerWeek *
-                plant.operatingTime.weeksPerYear
+                (plant.operatingTime?.hoursPerDay ?? 0) *
+                (plant.operatingTime?.daysPerWeek ?? 0) *
+                (plant.operatingTime?.weeksPerYear ?? 0)
               ).toLocaleString()}
             </span>
           </div>
@@ -86,15 +85,15 @@ export function OperatingTimeConfig({ plant, onChange }: OperatingTimeConfigProp
             <span className="text-blue-800">Days per Year:</span>
             <span className="text-blue-900 font-medium">
               {Math.round(
-                plant.operatingTime.daysPerWeek *
-                plant.operatingTime.weeksPerYear
+                (plant.operatingTime?.daysPerWeek ?? 0) *
+                (plant.operatingTime?.weeksPerYear ?? 0)
               ).toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between">
             <span className="text-blue-800">Hours per Day:</span>
             <span className="text-blue-900 font-medium">
-              {plant.operatingTime.hoursPerDay.toFixed(1)}
+              {plant.operatingTime?.hoursPerDay?.toFixed(1) ?? '0.0'}
             </span>
           </div>
         </div>

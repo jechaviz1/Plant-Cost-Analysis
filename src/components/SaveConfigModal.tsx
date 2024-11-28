@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 
 interface SaveConfigModalProps {
@@ -9,9 +9,9 @@ interface SaveConfigModalProps {
   isUpdate?: boolean;
 }
 
-export function SaveConfigModal({ 
-  isOpen, 
-  onClose, 
+export function SaveConfigModal({
+  isOpen,
+  onClose,
   onSave,
   existingName = '',
   isUpdate = false
@@ -67,7 +67,7 @@ export function SaveConfigModal({
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="c-input"
               placeholder="Enter a name for this configuration"
               disabled={isSaving}
             />

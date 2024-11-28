@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   LineChart,
   Line,
@@ -10,10 +9,10 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from 'recharts';
-import { calculateTotalCost, calculateReasonableInterval } from '../utils/calculations';
+// import { calculateTotalCost, calculateReasonableInterval } from '../utils/calculations';
+import { calculateTotalCost } from '../utils/calculations';
 import { calculateCapacity, calculateAvailableHours } from '../utils/capacity';
 import { safeNumberFormat, safeCurrencyFormat, safePercentFormat, safeGetUnitType } from '../utils/safeAccess';
-import { LoadingState } from './LoadingState';
 import type { Plant, Product } from '../types';
 
 interface ProductProfitAnalysisProps {
@@ -33,15 +32,18 @@ export function ProductProfitAnalysis({ plant, product }: ProductProfitAnalysisP
   }
 
   // Calculate capacity based on rate or fixed capacity
-  let capacity = productConfig.capacity;
+  const capacityMode = plant.capacityMode;
+  let capacity = capacityMode === 'rate' ? null : productConfig.capacity;
+
   if (!capacity && productConfig.rate && plant.operatingTime) {
     capacity = Math.floor(
-    calculateCapacity(
-      productConfig.rate.units,
-      productConfig.rate.timeUnit,
-      'year',
-      calculateAvailableHours(plant)
-    ));
+      calculateCapacity(
+        productConfig.rate.units,
+        productConfig.rate.timeUnit,
+        'year',
+        calculateAvailableHours(plant)
+      )
+    );
   }
 
   if (!capacity) {
@@ -62,10 +64,10 @@ export function ProductProfitAnalysis({ plant, product }: ProductProfitAnalysisP
 
   // Generate data points for profit analysis
   const data: any[] = [];
-  const interval = calculateReasonableInterval(capacity);
+  // const interval = calculateReasonableInterval(capacity);
   let hasValidData = false;
   let breakEvenPoint;
-  
+
   // Ensure we have at least two points for the chart
   const points = [0];
   for (let i = 1; i <= 20; i++) {
@@ -81,14 +83,14 @@ export function ProductProfitAnalysis({ plant, product }: ProductProfitAnalysisP
       console.warn('Failed to calculate costs for units:', units);
       continue;
     }
-    
+
     const { cost } = result;
     if (cost < 0) continue;
 
     const revenue = units * product.price;
     const profit = revenue - cost;
     hasValidData = true;
-    
+
     const point = {
       units,
       revenue,
@@ -96,9 +98,9 @@ export function ProductProfitAnalysis({ plant, product }: ProductProfitAnalysisP
       profit,
       profitMargin: units > 0 ? (profit / revenue) * 100 : 0
     };
-    
+
     data.push(point);
-    
+
     // Update break-even point
     if (!breakEvenPoint && profit >= 0 && units > 0) {
       breakEvenPoint = point;
@@ -135,9 +137,9 @@ export function ProductProfitAnalysis({ plant, product }: ProductProfitAnalysisP
               dataKey="units"
               tickFormatter={safeNumberFormat}
               label={{
-                value: `Production ${plant.settings.unitType}s`,
+                value: `Production ${unitType}s`,
                 position: 'bottom',
-                offset: 20
+                offset: 30
               }}
             />
             <YAxis

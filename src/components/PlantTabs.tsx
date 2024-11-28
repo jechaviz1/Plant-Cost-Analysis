@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, X, Copy, Settings as SettingsIcon } from 'lucide-react';
 import type { Plant } from '../types';
 
@@ -37,7 +37,7 @@ function ClonePlantModal({ isOpen, onClose, onSelect, plants }: ClonePlantModalP
             >
               <div className="font-medium">{plant.name}</div>
               <div className="text-sm text-gray-500">
-                Capacity: {plant.capacity.toLocaleString()} {plant.settings.unitType === 'other' ? plant.settings.customUnitType || 'unit' : plant.settings.unitType}s
+                Capacity: {plant.capacity?.toLocaleString()} {plant.settings?.unitType === 'other' ? plant.settings?.customUnitType || 'unit' : plant.settings?.unitType}s
               </div>
             </button>
           ))}
@@ -55,10 +55,10 @@ function ClonePlantModal({ isOpen, onClose, onSelect, plants }: ClonePlantModalP
   );
 }
 
-export function PlantTabs({ 
-  plants, 
-  activePlantId, 
-  onTabChange, 
+export function PlantTabs({
+  plants,
+  activePlantId,
+  onTabChange,
   onAddPlant,
   onClonePlant,
   onRemovePlant

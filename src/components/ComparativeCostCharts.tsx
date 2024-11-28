@@ -1,18 +1,4 @@
-import React from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from 'recharts';
-import { calculateTotalCost } from '../utils/calculations';
 import type { Plant, Product } from '../types';
-
-const COLORS = ['#2563eb', '#dc2626', '#059669', '#7c3aed', '#db2777'];
 
 interface ComparativeCostChartsProps {
   plants: Plant[];
@@ -31,10 +17,8 @@ interface ComparativeCostChartsProps {
   }[];
 }
 
-export function ComparativeCostCharts({ 
-  plants,
+export function ComparativeCostCharts({
   products,
-  currentProduction 
 }: ComparativeCostChartsProps) {
   const isSingleProduct = products.length === 1;
 

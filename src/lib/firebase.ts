@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
+import {
+  getAuth,
   GoogleAuthProvider,
   browserLocalPersistence,
   setPersistence
@@ -39,7 +39,7 @@ const initializeAnalytics = async () => {
       return getAnalytics(app);
     }
     return null;
-  } catch (error) {
+  } catch {
     console.warn('Analytics not supported in this environment');
     return null;
   }

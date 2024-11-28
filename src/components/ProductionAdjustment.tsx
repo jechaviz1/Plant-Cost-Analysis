@@ -2,22 +2,24 @@ import React from 'react';
 import { RefreshCw } from 'lucide-react';
 import type { Plant, Product } from '../types';
 
+interface Allocation {
+  plantId: string;
+  units: number;
+  products: {
+    [productId: string]: {
+      units: number;
+      revenue: number;
+      cost: number;
+      profit: number;
+    };
+  };
+}
+
 interface ProductionAdjustmentProps {
   plants: Plant[];
   products: Product[];
-  allocations: {
-    plantId: string;
-    units: number;
-    products: {
-      [productId: string]: {
-        units: number;
-        revenue: number;
-        cost: number;
-        profit: number;
-      };
-    };
-  }[];
-  onAllocationsChange: (allocations: typeof allocations) => void;
+  allocations: Allocation[];
+  onAllocationsChange: (allocations: Allocation[]) => void;
   onReset: () => void;
 }
 
@@ -92,12 +94,12 @@ export function ProductionAdjustment({
                           type="text"
                           value={formatNumber(allocation.units)}
                           onChange={(e) => handleProductUnitsChange(plantId, product.id, e.target.value)}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                          placeholder={`Enter units (max: ${productConfig.capacity.toLocaleString()})`}
+                          className="c-input"
+                          placeholder={`Enter units (max: ${productConfig.capacity ? productConfig.capacity.toLocaleString() : 'N/A'})`}
                         />
                       </div>
                       <div className="text-sm text-gray-500 mt-1">
-                        Maximum capacity: {productConfig.capacity.toLocaleString()} units
+                        Maximum capacity: {productConfig?.capacity?.toLocaleString() || 'N/A'} units
                       </div>
                     </div>
                   );

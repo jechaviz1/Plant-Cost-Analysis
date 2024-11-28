@@ -35,7 +35,8 @@ export function AuthButton() {
   const handleSignOut = async () => {
     try {
       await signOut();
-    } catch (err) {
+    } catch (err: any) {
+      console.error('Sign-out error:', err);
       setLocalError('Failed to sign out. Please try again.');
     }
   };
@@ -81,7 +82,7 @@ export function AuthButton() {
             )}
             {isSigningIn ? 'Signing in...' : 'Sign in with Google'}
           </button>
-          
+
           {displayError && (
             <div className="absolute top-full left-0 mt-2 w-64 p-2 bg-red-50 border border-red-200 rounded-md shadow-sm z-50">
               <div className="flex items-center text-red-800 text-sm">

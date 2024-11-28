@@ -15,6 +15,7 @@ export function Settings({ plant, onChange }: SettingsProps) {
       onChange({
         settings: {
           unitType: 'unit',
+          customUnitType: '',
           defaultTimeframe: 'year'
         }
       });
@@ -50,7 +51,7 @@ export function Settings({ plant, onChange }: SettingsProps) {
             <select
               value={plant.settings.unitType}
               onChange={(e) => handleSettingChange('unitType', e.target.value)}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="c-input"
             >
               {UNIT_TYPES.map(type => (
                 <option key={type} value={type}>
@@ -64,7 +65,7 @@ export function Settings({ plant, onChange }: SettingsProps) {
                 value={plant.settings.customUnitType || ''}
                 onChange={(e) => handleSettingChange('customUnitType', e.target.value)}
                 placeholder="Custom unit type"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="c-input"
               />
             )}
           </div>
@@ -80,7 +81,7 @@ export function Settings({ plant, onChange }: SettingsProps) {
           <select
             value={plant.settings.defaultTimeframe}
             onChange={(e) => handleSettingChange('defaultTimeframe', e.target.value as 'month' | 'year')}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="c-input"
           >
             <option value="month">Monthly</option>
             <option value="year">Yearly</option>
@@ -90,7 +91,7 @@ export function Settings({ plant, onChange }: SettingsProps) {
           </p>
         </div>
       </div>
-      
+
       <div className="mt-6 p-4 bg-blue-50 rounded-lg">
         <h3 className="text-sm font-medium text-blue-900 mb-2">Settings Impact</h3>
         <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">

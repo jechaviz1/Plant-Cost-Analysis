@@ -61,16 +61,16 @@ export function PlantProductManagement({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price ($)
+                 Price ($)
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   value={formatNumber(product.price)}
                   onChange={(e) => {
                     const value = e.target.value.replace(/[^\d.]/g, '');
                     onUpdateProduct(product.id, { price: parseNumber(value) });
                   }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
 
@@ -79,13 +79,13 @@ export function PlantProductManagement({
                   Demand ({plant.settings?.unitType === 'other' ? plant.settings?.customUnitType || 'unit' : plant.settings?.unitType}s)
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   value={formatNumber(product.demand)}
                   onChange={(e) => {
                     const value = e.target.value.replace(/[^\d]/g, '');
                     onUpdateProduct(product.id, { demand: parseNumber(value) });
                   }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
             </div>

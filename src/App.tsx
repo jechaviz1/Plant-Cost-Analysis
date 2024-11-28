@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Factory, Save } from 'lucide-react';
-import { CostForm } from './components/CostForm';
 import { PlantTabs } from './components/PlantTabs';
 import { TotalAnalysis } from './components/TotalAnalysis';
 import { AuthButton } from './components/AuthButton';
 import { SaveConfigModal } from './components/SaveConfigModal';
 import { ConfigurationsList } from './components/ConfigurationsList';
-import { ProductManagement } from './components/ProductManagement';
 import { PlantAnalysis } from './components/PlantAnalysis';
 import { Notification } from './components/Notification';
 import { Settings } from './components/Settings';
 import { useConfigurations } from './hooks/useConfigurations';
 import { useAuth } from './contexts/AuthContext';
 import { optimizeProduction } from './utils/optimization';
-import type { Plant, Product } from './types';
+import type { PlantConfig, Plant, Product } from './types';
+
+const LAST_CONFIG_KEY = 'lastConfigurationId';
 
 const createDefaultPlant = (): Plant => ({
   id: crypto.randomUUID(),
   name: 'Plant 1',
   settings: {
     unitType: 'unit',
+    customUnitType: 'unit',
     defaultTimeframe: 'year'
   },
   costs: [],
@@ -40,12 +41,19 @@ const createDefaultProduct = (): Product => ({
 });
 
 export default function App() {
-  const [config, setConfig] = useState<{
-    plants: Plant[];
-    products: Product[];
-  }>({
+  const [config, setConfig] = useState<PlantConfig>({
     plants: [createDefaultPlant()],
-    products: [createDefaultProduct()]
+    products: [createDefaultProduct()],
+    semiVariableCost: {
+      baseUnits: 0,
+      baseCost: 0,
+      scaleFactor: 0
+    },
+    capacity: 0,
+    unitType: 'unit',
+    fixedCost: 0,
+    variableCostPerUnit: 0,
+    manualCostPoints: []
   });
 
   const [activePlantId, setActivePlantId] = useState<string | 'total' | 'settings'>(config.plants[0].id);
@@ -67,7 +75,11 @@ export default function App() {
     }
   }, [user, lastConfigId, configurations]);
 
-  const handleLoadConfig = (loadedConfig: any, configId: string, name: string) => {
+  useEffect(() => {
+    console.log(config);
+  }, [config]);
+
+  const handleLoadConfig = (loadedConfig: PlantConfig, configId: string, name: string) => {
     setConfig(loadedConfig);
     setCurrentConfigId(configId);
     setCurrentConfigName(name);
@@ -77,7 +89,17 @@ export default function App() {
   const handleNewConfig = () => {
     const newConfig = {
       plants: [createDefaultPlant()],
-      products: [createDefaultProduct()]
+      products: [createDefaultProduct()],
+      semiVariableCost: {
+        baseUnits: 0,
+        baseCost: 0,
+        scaleFactor: 0
+      },
+      capacity: 0,
+      unitType: 'unit',
+      fixedCost: 0,
+      variableCostPerUnit: 0,
+      manualCostPoints: []
     };
     setConfig(newConfig);
     setCurrentConfigId(null);
@@ -120,6 +142,13 @@ export default function App() {
     setActivePlantId(newPlant.id);
   };
 
+  const handleUpdateProducts = (products: Product[]) => {
+    setConfig(prev => ({
+      ...prev,
+      products
+    }));
+  };
+
   const handleClonePlant = (sourcePlant: Plant) => {
     const clonedPlant: Plant = {
       ...sourcePlant,
@@ -130,7 +159,7 @@ export default function App() {
         id: crypto.randomUUID()
       }))
     };
-    
+
     setConfig(prev => ({
       ...prev,
       plants: [...prev.plants, clonedPlant]
@@ -151,16 +180,9 @@ export default function App() {
   const handleUpdatePlant = (plantId: string, updates: Partial<Plant>) => {
     setConfig(prev => ({
       ...prev,
-      plants: prev.plants.map(p => 
+      plants: prev.plants.map(p =>
         p.id === plantId ? { ...p, ...updates } : p
       )
-    }));
-  };
-
-  const handleUpdateProducts = (products: Product[]) => {
-    setConfig(prev => ({
-      ...prev,
-      products
     }));
   };
 
@@ -242,9 +264,9 @@ export default function App() {
             <div className="space-y-8">
               {activePlantId === 'settings' ? (
                 <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
-                  <Settings 
-                    plant={config.plants[0]} 
-                    onChange={(updates) => handleUpdatePlant(config.plants[0].id, updates)} 
+                  <Settings
+                    plant={config.plants[0]}
+                    onChange={(updates) => handleUpdatePlant(config.plants[0].id, updates)}
                   />
                 </div>
               ) : activePlantId === 'total' && optimizationResult ? (
@@ -291,7 +313,7 @@ export default function App() {
                 message: 'Configuration updated successfully',
                 type: 'success'
               });
-              localStorage.setItem('lastConfigurationId', currentConfigId);
+              localStorage.setItem(LAST_CONFIG_KEY, currentConfigId);
             } else {
               const newId = await saveConfiguration(name, config);
               setCurrentConfigId(newId);
@@ -302,7 +324,7 @@ export default function App() {
               });
             }
             setIsSaveModalOpen(false);
-          } catch (error) {
+          } catch {
             setNotification({
               message: 'Failed to save configuration',
               type: 'error'

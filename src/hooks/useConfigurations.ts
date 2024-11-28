@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { 
+import {
   addDoc,
   updateDoc,
   deleteDoc,
@@ -8,14 +8,12 @@ import {
   where,
   serverTimestamp,
   onSnapshot,
-  FirebaseError,
+  FirestoreError,
   or,
-  and,
-  getDocs
 } from 'firebase/firestore';
 import { db, configurationsRef } from '../lib/firebase';
 import { useAuth } from '../contexts/AuthContext';
-import type { PlantConfig, ConfigurationMeta, SharedUser } from '../types';
+import type { ConfigurationMeta, SharedUser, PlantConfig } from '../types';
 
 const LAST_CONFIG_KEY = 'lastConfigurationId';
 
@@ -47,9 +45,9 @@ export function useConfigurations() {
           where('sharedWith', 'array-contains', { uid: user.uid })
         )
       );
-      
+
       const unsubscribe = onSnapshot(
-        q, 
+        q,
         (snapshot) => {
           const configs = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -94,15 +92,30 @@ export function useConfigurations() {
       setLastConfigId(docRef.id);
       return docRef.id;
     } catch (err) {
-      const fbError = err as FirebaseError;
+      const fbError = err as FirestoreError;
       console.error('Error saving configuration:', fbError);
       throw new Error(`Failed to save configuration: ${fbError.message}`);
     }
   };
 
+  const removeUndefinedValues = (obj: any): any => {
+    if (Array.isArray(obj)) {
+        return obj.map(removeUndefinedValues);
+    } else if (obj !== null && typeof obj === 'object') {
+        return Object.keys(obj).reduce((acc: Record<string, any>, key) => {
+            const value = removeUndefinedValues(obj[key]);
+            if (value !== undefined) {
+                acc[key] = value;
+            }
+            return acc;
+        }, {} as Record<string, any>);
+    }
+    return obj;
+  };
+
   const updateConfiguration = async (
-    id: string, 
-    name: string, 
+    id: string,
+    name: string,
     config: PlantConfig,
     sharedWith?: SharedUser[],
     isPublic?: boolean
@@ -117,7 +130,7 @@ export function useConfigurations() {
     }
 
     // Check if user has permission to update
-    if (configDoc.userId !== user.uid && 
+    if (configDoc.userId !== user.uid &&
         !configDoc.sharedWith?.some(s => s.uid === user.uid && s.role === 'editor')) {
       throw new Error('You do not have permission to update this configuration');
     }
@@ -125,7 +138,7 @@ export function useConfigurations() {
     try {
       setError(null);
       const docRef = doc(db, 'configurations', id);
-      const updateData: any = {
+      const updateData: Partial<ConfigurationMeta> = {
         name,
         config,
         updatedAt: serverTimestamp()
@@ -137,10 +150,11 @@ export function useConfigurations() {
         if (isPublic !== undefined) updateData.isPublic = isPublic;
       }
 
-      await updateDoc(docRef, updateData);
+      const filteredUpdateData = removeUndefinedValues(updateData);
+      await updateDoc(docRef, filteredUpdateData);
       return true;
     } catch (err) {
-      const fbError = err as FirebaseError;
+      const fbError = err as FirestoreError;
       console.error('Error updating configuration:', fbError);
       throw new Error(`Failed to update configuration: ${fbError.message}`);
     }
@@ -165,7 +179,7 @@ export function useConfigurations() {
       await deleteDoc(doc(db, 'configurations', id));
       return true;
     } catch (err) {
-      const fbError = err as FirebaseError;
+      const fbError = err as FirestoreError;
       console.error('Error deleting configuration:', fbError);
       throw new Error(`Failed to delete configuration: ${fbError.message}`);
     }
@@ -198,7 +212,7 @@ export function useConfigurations() {
 
       return true;
     } catch (err) {
-      const fbError = err as FirebaseError;
+      const fbError = err as FirestoreError;
       console.error('Error updating sharing settings:', fbError);
       throw new Error(`Failed to update sharing settings: ${fbError.message}`);
     }

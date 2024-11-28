@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, Minus, Factory } from 'lucide-react';
-import type { PlantConfig, ManualCostPoint } from '../types';
+import type { PlantConfig } from '../types';
 
 interface ConfigFormProps {
   config: PlantConfig;
@@ -11,7 +11,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const newConfig = { ...config };
-    
+
     if (name.startsWith('semiVariableCost.')) {
       const field = name.split('.')[1];
       newConfig.semiVariableCost = {
@@ -21,7 +21,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
     } else {
       (newConfig as any)[name] = name === 'unitType' ? value : (parseFloat(value) || 0);
     }
-    
+
     onChange(newConfig);
   };
 
@@ -88,7 +88,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
               name="fixedCost"
               value={config.fixedCost}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="c-input"
             />
           </div>
 
@@ -99,7 +99,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
               name="variableCostPerUnit"
               value={config.variableCostPerUnit}
               onChange={handleChange}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="c-input"
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
                   name="semiVariableCost.baseUnits"
                   value={config.semiVariableCost.baseUnits}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
               <div>
@@ -125,7 +125,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
                   name="semiVariableCost.baseCost"
                   value={config.semiVariableCost.baseCost}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
               <div>
@@ -136,7 +136,7 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
                   value={config.semiVariableCost.scaleFactor}
                   onChange={handleChange}
                   step="0.1"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
             </div>
@@ -165,14 +165,14 @@ export function ConfigForm({ config, onChange }: ConfigFormProps) {
                 value={point.units}
                 onChange={(e) => updateManualPoint(point.id, 'units', parseFloat(e.target.value) || 0)}
                 placeholder="Units"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="c-input"
               />
               <input
                 type="number"
                 value={point.cost}
                 onChange={(e) => updateManualPoint(point.id, 'cost', parseFloat(e.target.value) || 0)}
                 placeholder="Cost ($)"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="c-input"
               />
               <button
                 type="button"

@@ -31,12 +31,10 @@ export function ProductCapacityConfig({ plant, products, onChange }: ProductCapa
     onChange({
       capacityMode: mode,
       // Initialize operating time when switching to rate mode
-      ...(mode === 'rate' && !plant.operatingTime && { 
-        operatingTime: DEFAULT_OPERATING_TIME 
-      }),
+      ...(mode === 'rate' && !plant.operatingTime ? { operatingTime: DEFAULT_OPERATING_TIME } : {}),
       // Reset operating time when switching to fixed mode
-      ...(mode === 'fixed' && { 
-        operatingTime: undefined 
+      ...(mode === 'fixed' && {
+        operatingTime: undefined
       })
     });
   };
@@ -87,13 +85,23 @@ export function ProductCapacityConfig({ plant, products, onChange }: ProductCapa
       {plant.capacityMode === 'fixed' ? (
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Maximum Capacity ({plant.unitType}s)
+            Maximum Capacity ({plant?.settings?.unitType}s)
           </label>
           <input
             type="number"
             value={plant.capacity || 0}
-            onChange={(e) => onChange({ capacity: parseFloat(e.target.value) || 0 })}
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            onChange={(e) => {
+              const newCapacity = parseFloat(e.target.value) || 0;
+              const updatedProducts = products.reduce((acc: any, product) => {
+                acc[product.id] = {
+                  capacity: newCapacity,
+                };
+                return acc;
+              }, {});
+
+              onChange({ capacity: newCapacity, capacityMode: 'fixed', products: updatedProducts });
+            }}
+            className="c-input"
           />
         </div>
       ) : (

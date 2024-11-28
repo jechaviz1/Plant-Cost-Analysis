@@ -51,9 +51,9 @@ export function PLAnalysisTable({ analysis, unitType }: PLAnalysisTableProps) {
                       ${Math.round(point.costBreakdown[costId]).toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ${(point.costBreakdown[costId] / point.units || 0).toLocaleString(undefined, { 
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2 
+                      ${(point.costBreakdown[costId] / point.units || 0).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
                       })}
                     </td>
                   </React.Fragment>
@@ -62,9 +62,9 @@ export function PLAnalysisTable({ analysis, unitType }: PLAnalysisTableProps) {
                   ${Math.round(point.totalCost).toLocaleString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-900">
-                  ${point.costPerUnit.toLocaleString(undefined, { 
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2 
+                  ${point.costPerUnit.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
                   })}
                 </td>
               </tr>

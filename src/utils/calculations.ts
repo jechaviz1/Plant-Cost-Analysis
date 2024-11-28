@@ -1,7 +1,7 @@
 import type { Plant, CostPoint, Cost, PLAnalysis, Product } from '../types';
 
 function calculateFixedCost(
-  cost: Cost & { type: 'fixed' },
+  cost: Cost,// & { type: 'fixed' },
   units: { [productId: string]: number }
 ): number {
   // If it's plant-wide, always apply the fixed cost
@@ -18,31 +18,31 @@ function calculateFixedCost(
 }
 
 function calculateVariableCost(
-  cost: Cost & { type: 'variable' },
+  cost: Cost,// & { type: 'variable' },
   units: { [productId: string]: number }
 ): number {
   if (cost.allocationType === 'plant-wide') {
     // For plant-wide, apply the same rate to all units
     const totalUnits = Object.values(units).reduce((sum, u) => sum + u, 0);
-    
+
     if (cost.stepType === 'variable' && cost.ranges) {
       // Find applicable range
-      const range = cost.ranges.find(r => 
+      const range = cost.ranges.find(r =>
         totalUnits >= r.startUnits && totalUnits <= r.endUnits
       );
       return range ? totalUnits * (range.costPerUnit || 0) : 0;
     }
-    
+
     return totalUnits * (cost.costPerUnit || 0);
   }
 
   if (cost.allocationType === 'product-specific' && cost.specificToProduct) {
     // For product-specific, only apply to units of that product
     const productUnits = units[cost.specificToProduct] || 0;
-    
+
     if (cost.stepType === 'variable' && cost.ranges && cost.productRangeRates) {
       // Find applicable range
-      const range = cost.ranges.find(r => 
+      const range = cost.ranges.find(r =>
         productUnits >= r.startUnits && productUnits <= r.endUnits
       );
       if (range) {
@@ -53,12 +53,12 @@ function calculateVariableCost(
       }
       return 0;
     }
-    
+
     // Check if there's a specific rate for this product
     const productRate = cost.productSpecificRates?.find(
       rate => rate.productId === cost.specificToProduct
     );
-    
+
     const rateToUse = productRate?.costPerUnit || cost.costPerUnit || 0;
     return productUnits * rateToUse;
   }
@@ -67,7 +67,7 @@ function calculateVariableCost(
 }
 
 function calculateSemiVariableCost(
-  cost: Cost & { type: 'semi-variable' },
+  cost: Cost,// & { type: 'semi-variable' },
   units: { [productId: string]: number }
 ): number {
   const totalUnits = cost.allocationType === 'plant-wide'
@@ -84,16 +84,16 @@ function calculateSemiVariableCost(
 
   // Calculate percentage change in units from base
   const percentageChange = (totalUnits - baseUnits) / baseUnits;
-  
+
   // Apply scale factor to the percentage change
   const scaledChange = percentageChange * scaleFactor;
-  
+
   // Calculate the cost change and add to base cost
   return baseCost * (1 + scaledChange);
 }
 
 function calculateStepFunctionCost(
-  cost: Cost & { type: 'step-function' },
+  cost: Cost,// & { type: 'step-function' },
   units: { [productId: string]: number }
 ): number {
   const totalUnits = cost.allocationType === 'plant-wide'
@@ -103,21 +103,21 @@ function calculateStepFunctionCost(
       : 0;
 
   const sortedRanges = [...(cost.ranges || [])].sort((a, b) => a.startUnits - b.startUnits);
-  
+
   if (sortedRanges.length === 0) return 0;
-  
+
   let totalCost = 0;
-  let remainingUnits = totalUnits;
+  const remainingUnits = totalUnits;
   let currentIndex = 0;
-  
+
   while (remainingUnits > 0 && currentIndex < sortedRanges.length) {
     const range = sortedRanges[currentIndex];
-    
+
     const rangeUnits = Math.min(
       remainingUnits,
       range.endUnits - range.startUnits
     );
-    
+
     if (rangeUnits > 0) {
       if (cost.stepType === 'fixed') {
         totalCost += range.fixedCost || 0;
@@ -125,10 +125,10 @@ function calculateStepFunctionCost(
         totalCost += rangeUnits * (range.costPerUnit || 0);
       }
     }
-    
+
     currentIndex++;
   }
-  
+
   return totalCost;
 }
 
@@ -161,7 +161,7 @@ export function calculateTotalCost(
     for (const cost of validCosts) {
       if (!cost) continue;
       let costAmount = 0;
-      
+
       switch (cost.type) {
         case 'fixed':
           costAmount = calculateFixedCost(cost, productUnits);
@@ -176,7 +176,7 @@ export function calculateTotalCost(
           costAmount = calculateStepFunctionCost(cost, productUnits);
           break;
       }
-      
+
       breakdown[cost.name] = costAmount;
       totalCost += costAmount;
     }
@@ -225,14 +225,14 @@ export function generateCostCurve(
 
   const interval = calculateReasonableInterval(capacity);
   const points: CostPoint[] = [];
-  
+
   for (let units = 0; units <= capacity; units += interval) {
-    const productUnits = productId 
+    const productUnits = productId
       ? { [productId]: units }
       : { [Object.keys(config.products)[0]]: units };
     points.push(calculateTotalCost(productUnits, config));
   }
-  
+
   // Ensure the last point is exactly at capacity if it's not already included
   if (capacity % interval !== 0) {
     const productUnits = productId
@@ -240,7 +240,7 @@ export function generateCostCurve(
       : { [Object.keys(config.products)[0]]: capacity };
     points.push(calculateTotalCost(productUnits, config));
   }
-  
+
   return points;
 }
 
@@ -269,12 +269,12 @@ export function generatePLAnalysis(
 
   const interval = calculateReasonableInterval(capacity);
   const analysis: PLAnalysis[] = [];
-  
+
   for (let units = 0; units <= capacity; units += interval) {
     const productUnits = product
       ? { [product.id]: units }
       : { [Object.keys(config.products)[0]]: units };
-    
+
     const { cost: totalCost, breakdown } = calculateTotalCost(productUnits, config);
     const revenue = product ? units * product.price : 0;
 
@@ -296,13 +296,13 @@ export function generatePLAnalysis(
       })
     });
   }
-  
+
   // Add the capacity point if it's not already included
   if (capacity % interval !== 0) {
     const productUnits = product
       ? { [product.id]: capacity }
       : { [Object.keys(config.products)[0]]: capacity };
-    
+
     const { cost: totalCost, breakdown } = calculateTotalCost(productUnits, config);
     const revenue = product ? capacity * product.price : 0;
 
@@ -324,7 +324,7 @@ export function generatePLAnalysis(
       })
     });
   }
-  
+
   return analysis;
 }
 
@@ -333,10 +333,10 @@ export function findOptimalProduction(
   product?: Product
 ): CostPoint {
   const capacity = product ? config.products[product.id]?.capacity || config.capacity : config.capacity;
-  
+
   // Filter out zero units to avoid division by zero
   const pointsWithCostPerUnit = generateCostCurve(config, product?.id)
-    .filter(point => point.units > 0 && point.units <= capacity)
+    .filter(point => point.units > 0 && capacity !== undefined && point.units <= capacity)
     .map(point => ({
       ...point,
       costPerUnit: point.cost / point.units,
@@ -347,13 +347,13 @@ export function findOptimalProduction(
 
   // If we have a product, optimize for profit instead of cost per unit
   if (product) {
-    return pointsWithCostPerUnit.reduce((optimal, point) => 
+    return pointsWithCostPerUnit.reduce((optimal, point) =>
       point.profit > optimal.profit ? point : optimal
     , pointsWithCostPerUnit[0]);
   }
 
   // Otherwise, optimize for minimum cost per unit
-  return pointsWithCostPerUnit.reduce((optimal, point) => 
+  return pointsWithCostPerUnit.reduce((optimal, point) =>
     point.costPerUnit < optimal.costPerUnit ? point : optimal
   , pointsWithCostPerUnit[0]);
 }
@@ -362,7 +362,7 @@ export function calculateReasonableInterval(capacity: number): number {
   if (capacity <= 10) return 1;
   if (capacity <= 100) return 10;
   if (capacity <= 1000) return 100;
-  
+
   const magnitude = Math.floor(Math.log10(capacity));
   const base = Math.pow(10, magnitude - 1);
   return Math.max(base, Math.ceil(capacity / 20));

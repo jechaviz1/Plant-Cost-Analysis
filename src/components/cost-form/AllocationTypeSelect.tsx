@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Cost } from '../../types';
 
 type AllocationType = Cost['allocationType'];

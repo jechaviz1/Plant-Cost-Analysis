@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Plant, Product, OptimizationResult } from '../types';
 
 interface AlternativeScenariosProps {
@@ -8,16 +7,14 @@ interface AlternativeScenariosProps {
 }
 
 export function AlternativeScenarios({
-  plants,
   products,
-  result
 }: AlternativeScenariosProps) {
   const isSingleProduct = products.length === 1;
 
   return (
     <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Alternative Production Scenarios</h2>
-      
+
       {isSingleProduct ? (
         <div className="text-gray-500 text-center py-4">
           Alternative scenarios are automatically calculated for single-product configurations.

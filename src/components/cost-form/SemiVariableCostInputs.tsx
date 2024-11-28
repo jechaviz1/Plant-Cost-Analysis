@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SemiVariableCostInputsProps {
   baseUnits: number;
   baseCost: number;
@@ -25,10 +23,10 @@ export function SemiVariableCostInputs({
           Base {unitType}s
         </label>
         <input
-          type="text"
+          type="number"
           value={formatNumber(baseUnits)}
           onChange={(e) => onChange({ baseUnits: parseNumber(e.target.value) })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="c-input"
         />
       </div>
 
@@ -37,10 +35,10 @@ export function SemiVariableCostInputs({
           Base Cost ($)
         </label>
         <input
-          type="text"
+          type="number"
           value={formatNumber(baseCost)}
           onChange={(e) => onChange({ baseCost: parseNumber(e.target.value) })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="c-input"
         />
       </div>
 
@@ -53,7 +51,7 @@ export function SemiVariableCostInputs({
           value={scaleFactor}
           onChange={(e) => onChange({ scaleFactor: parseFloat(e.target.value) || 0 })}
           step="0.1"
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="c-input"
         />
       </div>
 

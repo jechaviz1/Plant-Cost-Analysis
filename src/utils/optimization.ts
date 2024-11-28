@@ -1,6 +1,6 @@
 import solver from 'javascript-lp-solver';
 import { calculateTotalCost } from './calculations';
-import type { Plant, Product, OptimizationResult } from '../types';
+import type {  Plant, Product, OptimizationResult } from '../types';
 
 interface ProductionVariable {
   plantId: string;
@@ -30,7 +30,7 @@ function createMultiProductModel(
   });
 
   // Add capacity constraints for each plant
-  plants.forEach((plant, plantIndex) => {
+  plants.forEach((plant) => {
     model.constraints[`capacity_${plant.id}`] = { max: plant.capacity };
   });
 
@@ -48,7 +48,8 @@ function createMultiProductModel(
         model.constraints[`capacity_${plant.id}`][varName] = 1;
 
         // Calculate approximate coefficients for the objective function
-        const testPoints = [0, plant.products[product.id].capacity / 2, plant.products[product.id].capacity];
+        const productCapacity = plant.products[product.id]?.capacity || 0;
+        const testPoints = [0, productCapacity / 2, productCapacity];
         const costs = testPoints.map(units => {
           const totalCost = calculateTotalCost({ [product.id]: units }, plant);
           return totalCost.cost;
@@ -62,7 +63,7 @@ function createMultiProductModel(
         const sumXX = testPoints.reduce((sum, x) => sum + x * x, 0);
 
         const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-        const intercept = (sumY - slope * sumX) / n;
+        // const intercept = (sumY - slope * sumX) / n;
 
         // Add variable to model
         model.variables[varName] = {
@@ -91,7 +92,7 @@ function createMultiProductModel(
             min: 0,
             max: 0
           };
-          model.constraints[`setup_${plant.id}_${product.id}`][varName] = -plant.capacity;
+          model.constraints[`setup_${plant.id}_${product.id}`][varName] = -(plant.capacity || 0);
           model.constraints[`setup_${plant.id}_${product.id}`][setupVarName] = plant.capacity;
         }
       }
@@ -106,7 +107,7 @@ export function optimizeProduction(
   products: Product[]
 ): OptimizationResult {
   // Create and solve linear model
-  const { model, variables } = createMultiProductModel(plants, products);
+  const { model } = createMultiProductModel(plants, products);
   const solution = solver.Solve(model) || {}; // Ensure solution is an object
 
   // Process solution into plant allocations

@@ -1,4 +1,4 @@
-import type { Plant, Product, TimeUnit } from '../types';
+import type { Plant, TimeUnit } from '../types';
 
 // Convert time units to hours
 export function convertToHours(value: number, unit: TimeUnit): number {
@@ -35,7 +35,7 @@ export function convertFromHours(hours: number, toUnit: TimeUnit): number {
 // Calculate available production hours per year
 export function calculateAvailableHours(plant: Plant): number {
   if (!plant.operatingTime) return 0;
-  
+
   const { hoursPerDay, daysPerWeek, weeksPerYear } = plant.operatingTime;
   return hoursPerDay * daysPerWeek * weeksPerYear;
 }
@@ -49,7 +49,7 @@ export function calculateCapacity(
 ): number {
   // Convert rate to units per hour
   const unitsPerHour = rate / convertToHours(1, rateTimeUnit);
-  
+
   // Calculate capacity for the target time unit
   const targetHours = convertToHours(1, targetTimeUnit);
   const targetCapacity = unitsPerHour * targetHours;

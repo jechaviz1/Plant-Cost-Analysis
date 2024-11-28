@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface FixedCostInputProps {
   value: number;
   onChange: (value: number) => void;
@@ -15,10 +13,10 @@ export function FixedCostInput({ value, onChange }: FixedCostInputProps) {
         Fixed Amount ($)
       </label>
       <input
-        type="text"
+        type="number"
         value={formatNumber(value)}
         onChange={(e) => onChange(parseNumber(e.target.value))}
-        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        className="c-input"
       />
     </div>
   );

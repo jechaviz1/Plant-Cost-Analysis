@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Trash2, Edit, Loader2, Share2, Globe, Lock, Users, Plus } from 'lucide-react';
 import { useConfigurations } from '../hooks/useConfigurations';
 import { useAuth } from '../contexts/AuthContext';
@@ -12,11 +12,11 @@ interface ConfigurationsListProps {
   currentConfigId?: string | null;
 }
 
-export function ConfigurationsList({ 
-  onLoad, 
+export function ConfigurationsList({
+  onLoad,
   onEdit,
   onNew,
-  currentConfigId 
+  currentConfigId
 }: ConfigurationsListProps) {
   const { user } = useAuth();
   const { configurations, deleteConfiguration, loading, error } = useConfigurations();
@@ -36,7 +36,7 @@ export function ConfigurationsList({
     return (
       <div className="text-center py-4">
         <div className="text-red-500 mb-2">{error}</div>
-        <button 
+        <button
           onClick={() => window.location.reload()}
           className="text-sm text-blue-600 hover:text-blue-800"
         >
@@ -94,16 +94,16 @@ export function ConfigurationsList({
               <div
                 key={config.id}
                 className={`flex items-center justify-between p-3 bg-white rounded-lg border transition-all ${
-                  currentConfigId === config.id 
-                    ? 'border-blue-500 bg-blue-50 shadow-md' 
+                  currentConfigId === config.id
+                    ? 'border-blue-500 bg-blue-50 shadow-md'
                     : 'border-gray-200 hover:shadow-md'
                 }`}
               >
                 <button
                   onClick={() => onLoad(config.config, config.id, config.name)}
                   className={`flex-1 text-left ${
-                    currentConfigId === config.id 
-                      ? 'text-blue-700 font-medium' 
+                    currentConfigId === config.id
+                      ? 'text-blue-700 font-medium'
                       : 'text-gray-900 hover:text-blue-600'
                   }`}
                 >
@@ -130,8 +130,8 @@ export function ConfigurationsList({
                     <button
                       onClick={() => setShareModalConfig(config)}
                       className={`p-1 ${
-                        currentConfigId === config.id 
-                          ? 'text-blue-600 hover:text-blue-800' 
+                        currentConfigId === config.id
+                          ? 'text-blue-600 hover:text-blue-800'
                           : 'text-gray-400 hover:text-blue-600'
                       }`}
                     >
@@ -142,8 +142,8 @@ export function ConfigurationsList({
                     <button
                       onClick={() => onEdit(config.id, config.name)}
                       className={`p-1 ${
-                        currentConfigId === config.id 
-                          ? 'text-blue-600 hover:text-blue-800' 
+                        currentConfigId === config.id
+                          ? 'text-blue-600 hover:text-blue-800'
                           : 'text-gray-400 hover:text-blue-600'
                       }`}
                     >

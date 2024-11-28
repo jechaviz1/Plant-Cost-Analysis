@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, Minus, Factory } from 'lucide-react';
 import type { Plant, Cost, Product } from '../types';
 
@@ -96,7 +96,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
               <select
                 value={cost.type}
                 onChange={(e) => updateCost(cost.id, { type: e.target.value as Cost['type'] })}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="c-input"
               >
                 <option value="fixed">Fixed Cost</option>
                 <option value="variable">Variable Cost</option>
@@ -115,7 +115,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                     type="radio"
                     value="plant-wide"
                     checked={cost.allocationType === 'plant-wide'}
-                    onChange={() => updateCost(cost.id, { 
+                    onChange={() => updateCost(cost.id, {
                       allocationType: 'plant-wide',
                       specificToProduct: undefined
                     })}
@@ -128,7 +128,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                     type="radio"
                     value="product-specific"
                     checked={cost.allocationType === 'product-specific'}
-                    onChange={() => updateCost(cost.id, { 
+                    onChange={() => updateCost(cost.id, {
                       allocationType: 'product-specific',
                       specificToProduct: products[0]?.id
                     })}
@@ -147,7 +147,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                 <select
                   value={cost.specificToProduct || ''}
                   onChange={(e) => updateCost(cost.id, { specificToProduct: e.target.value })}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 >
                   <option value="">Select a product</option>
                   {products.map(product => (
@@ -168,7 +168,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                   type="number"
                   value={cost.amount || 0}
                   onChange={(e) => updateCost(cost.id, { amount: parseFloat(e.target.value) || 0 })}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
             )}
@@ -176,13 +176,13 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
             {cost.type === 'variable' && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Cost per {config.unitType} ($)
+                  Cost per {config.settings?.unitType} ($)
                 </label>
                 <input
                   type="number"
                   value={cost.costPerUnit || 0}
                   onChange={(e) => updateCost(cost.id, { costPerUnit: parseFloat(e.target.value) || 0 })}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
             )}
@@ -191,13 +191,13 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Base {config.unitType}s
+                    Base {config.settings?.unitType}s
                   </label>
                   <input
                     type="number"
                     value={cost.baseUnits || 0}
                     onChange={(e) => updateCost(cost.id, { baseUnits: parseFloat(e.target.value) || 0 })}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="c-input"
                   />
                 </div>
                 <div>
@@ -208,7 +208,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                     type="number"
                     value={cost.baseCost || 0}
                     onChange={(e) => updateCost(cost.id, { baseCost: parseFloat(e.target.value) || 0 })}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="c-input"
                   />
                 </div>
                 <div>
@@ -220,7 +220,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                     value={cost.scaleFactor || 1}
                     onChange={(e) => updateCost(cost.id, { scaleFactor: parseFloat(e.target.value) || 0 })}
                     step="0.1"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="c-input"
                   />
                 </div>
               </div>
@@ -235,7 +235,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                   <select
                     value={cost.stepType || 'fixed'}
                     onChange={(e) => updateCost(cost.id, { stepType: e.target.value as 'fixed' | 'variable' })}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    className="c-input"
                   >
                     <option value="fixed">Fixed Cost Steps</option>
                     <option value="variable">Variable Cost Steps</option>
@@ -256,7 +256,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                           id: crypto.randomUUID(),
                           startUnits: lastRange ? lastRange.endUnits : 0,
                           endUnits: lastRange ? lastRange.endUnits + 1000 : 1000,
-                          ...(cost.stepType === 'fixed' 
+                          ...(cost.stepType === 'fixed'
                             ? { fixedCost: 0 }
                             : { costPerUnit: 0 }
                           )
@@ -274,7 +274,7 @@ export function CostForm({ config, onChange, products }: CostFormProps) {
                     {(cost.ranges || []).map((range, index) => (
                       <div key={range.id} className="flex items-center space-x-4">
                         <div className="text-sm text-gray-500">
-                          {range.startUnits.toLocaleString()} - {range.endUnits.toLocaleString()} {config.unitType}s
+                          {range.startUnits.toLocaleString()} - {range.endUnits.toLocaleString()} {config.settings?.unitType}s
                         </div>
                         <input
                           type="number"

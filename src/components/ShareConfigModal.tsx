@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, Plus, Loader2, Trash2 } from 'lucide-react';
 import { useConfigurations } from '../hooks/useConfigurations';
 import type { ConfigurationMeta, SharedUser } from '../types';
@@ -39,7 +39,7 @@ export function ShareConfigModal({ config, onClose }: ShareConfigModalProps) {
   };
 
   const handleUpdateRole = (email: string, newRole: 'viewer' | 'editor') => {
-    setSharedUsers(sharedUsers.map(user => 
+    setSharedUsers(sharedUsers.map(user =>
       user.email === email ? { ...user, role: newRole } : user
     ));
   };
@@ -91,7 +91,7 @@ export function ShareConfigModal({ config, onClose }: ShareConfigModalProps) {
 
           <div className="border-t pt-4">
             <h4 className="text-sm font-medium text-gray-700 mb-2">Share with specific people</h4>
-            
+
             <div className="flex space-x-2 mb-4">
               <input
                 type="email"

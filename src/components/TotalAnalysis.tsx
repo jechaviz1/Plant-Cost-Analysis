@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { calculateTotalCost } from '../utils/calculations';
+import { useState } from 'react';
 import { ComparativeCostCharts } from './ComparativeCostCharts';
 import { ProductionAdjustment } from './ProductionAdjustment';
 import { AlternativeScenarios } from './AlternativeScenarios';
@@ -12,11 +11,11 @@ interface TotalAnalysisProps {
   onTotalCapacityChange: (capacity: number) => void;
 }
 
-export function TotalAnalysis({ 
-  result, 
+export function TotalAnalysis({
+  result,
   plants,
   products,
-  onTotalCapacityChange 
+  // onTotalCapacityChange
 }: TotalAnalysisProps) {
   const [manualAllocations, setManualAllocations] = useState(result.plantAllocations.map(a => ({
     plantId: a.plantId,
@@ -24,12 +23,12 @@ export function TotalAnalysis({
     products: a.products
   })));
 
-  const handleTotalCapacityChange = (value: string) => {
-    const numValue = parseInt(value.replace(/[^\d]/g, ''));
-    if (!isNaN(numValue)) {
-      onTotalCapacityChange(numValue);
-    }
-  };
+  // const handleTotalCapacityChange = (value: string) => {
+  //   const numValue = parseInt(value.replace(/[^\d]/g, ''));
+  //   if (!isNaN(numValue)) {
+  //     onTotalCapacityChange(numValue);
+  //   }
+  // };
 
   const isSingleProduct = products.length <= 1;
   const defaultProduct = products[0];
@@ -41,12 +40,12 @@ export function TotalAnalysis({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Price per {plants[0].unitType} ($)
+              Price per {plants[0].settings.unitType} ($)
             </label>
             <input
               type="text"
               value={defaultProduct?.price.toLocaleString() ?? '0'}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-gray-100"
+              className="c-input bg-gray-100"
               disabled
             />
             <p className="mt-1 text-sm text-gray-500">
@@ -55,12 +54,12 @@ export function TotalAnalysis({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Total Demand ({plants[0].unitType}s)
+              Total Demand ({plants[0].settings.unitType}s)
             </label>
             <input
               type="text"
               value={defaultProduct?.demand.toLocaleString() ?? '0'}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm bg-gray-100"
+              className="c-input bg-gray-100"
               disabled
             />
             <p className="mt-1 text-sm text-gray-500">
@@ -130,7 +129,7 @@ export function TotalAnalysis({
 
       <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Optimal Production Analysis</h2>
-        
+
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">

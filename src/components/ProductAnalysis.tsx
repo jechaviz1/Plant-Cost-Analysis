@@ -1,4 +1,3 @@
-import React from 'react';
 import { ProductCostAnalysis } from './ProductCostAnalysis';
 import { ProductProfitAnalysis } from './ProductProfitAnalysis';
 import type { Plant, Product } from '../types';
@@ -20,16 +19,16 @@ export function ProductAnalysis({ plant, product }: ProductAnalysisProps) {
   return (
     <div className="space-y-8">
       <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
-        <ProductCostAnalysis 
-          plant={plant} 
-          product={product} 
+        <ProductCostAnalysis
+          plant={plant}
+          product={product}
         />
       </div>
 
       <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
-        <ProductProfitAnalysis 
-          plant={plant} 
-          product={product} 
+        <ProductProfitAnalysis
+          plant={plant}
+          product={product}
         />
       </div>
     </div>

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @layer base {
-  input[type="number"] {
-    @apply px-3 py-2;
+  .c-input {
+    @apply px-3 py-1 block w-full rounded-md border transition-all border-gray-200  shadow-sm focus:border-gray-500 focus:ring-blue-500 sm:text-sm;
   }
 }
 

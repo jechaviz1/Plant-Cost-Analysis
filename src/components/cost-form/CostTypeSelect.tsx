@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Info } from 'lucide-react';
 import type { Cost } from '../../types';
 
@@ -40,7 +40,7 @@ export function CostTypeSelect({ value, onChange }: CostTypeSelectProps) {
                 className="form-radio h-4 w-4 text-blue-600"
               />
               <span className="text-sm text-gray-700">
-                {type.split('-').map(word => 
+                {type.split('-').map(word =>
                   word.charAt(0).toUpperCase() + word.slice(1)
                 ).join(' ')}
               </span>

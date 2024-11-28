@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Product, ProductSpecificRate } from '../../types';
 
 interface ProductSpecificRatesProps {
@@ -15,9 +14,9 @@ export function ProductSpecificRates({
   const handleRateChange = (productId: string, value: string) => {
     const numValue = parseFloat(value) || 0;
     const existingRate = rates.find(r => r.productId === productId);
-    
+
     if (existingRate) {
-      onChange(rates.map(r => 
+      onChange(rates.map(r =>
         r.productId === productId ? { ...r, costPerUnit: numValue } : r
       ));
     } else {
@@ -42,7 +41,7 @@ export function ProductSpecificRates({
                 type="number"
                 value={rate?.costPerUnit || ''}
                 onChange={(e) => handleRateChange(product.id, e.target.value)}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="c-input"
                 placeholder="Cost per unit"
               />
             </div>

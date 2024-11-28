@@ -1,4 +1,3 @@
-import React from 'react';
 import { Plus, Minus } from 'lucide-react';
 import type { StepFunctionRange, Product, ProductSpecificRate } from '../../types';
 
@@ -28,20 +27,20 @@ export function StepFunctionInputs({
 
   const handleProductRateChange = (productId: string, rangeId: string, value: string) => {
     if (!onProductRatesChange) return;
-    
+
     const numValue = parseNumber(value);
-    const existingRateIndex = productRates.findIndex(r => 
+    const existingRateIndex = productRates.findIndex(r =>
       r.productId === productId && r.rangeId === rangeId
     );
-    
+
     if (existingRateIndex >= 0) {
       const newRates = [...productRates];
       if (numValue === 0) {
         newRates.splice(existingRateIndex, 1);
       } else {
-        newRates[existingRateIndex] = { 
-          ...newRates[existingRateIndex], 
-          costPerUnit: numValue 
+        newRates[existingRateIndex] = {
+          ...newRates[existingRateIndex],
+          costPerUnit: numValue
         };
       }
       onProductRatesChange(newRates);
@@ -105,73 +104,91 @@ export function StepFunctionInputs({
             <div className="text-sm text-gray-500">
               {formatNumber(range.startUnits)}
             </div>
-            <div className="col-span-2">
-              <input
-                type="text"
-                value={formatNumber(range.endUnits)}
-                onChange={(e) => {
-                  const newEndUnits = parseNumber(e.target.value);
-                  updateRange(range.id, { endUnits: newEndUnits });
-                  if (ranges[index + 1]) {
-                    updateRange(ranges[index + 1].id, { startUnits: newEndUnits });
-                  }
-                }}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-              />
-            </div>
             {isProductSpecific ? (
-              <div className="col-span-3 pl-4 space-y-2">
-                {products.map(product => {
-                  const rate = productRates.find(r => 
-                    r.productId === product.id && r.rangeId === range.id
-                  );
-                  return (
-                    <div key={product.id} className="flex items-center space-x-4">
-                      <div className="w-1/3">
-                        <label className="block text-sm text-gray-600">
-                          {product.name}
-                        </label>
-                      </div>
-                      <div className="w-2/3 flex items-center space-x-2">
-                        <input
-                          type="text"
-                          value={rate ? formatNumber(rate.costPerUnit) : ''}
-                          onChange={(e) => handleProductRateChange(
-                            product.id,
-                            range.id,
-                            e.target.value
-                          )}
-                          placeholder={`Cost per ${unitType}`}
-                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={formatNumber(stepType === 'fixed' ? range.fixedCost || 0 : range.costPerUnit || 0)}
-                  onChange={(e) => {
-                    const value = parseNumber(e.target.value);
-                    updateRange(range.id, 
-                      stepType === 'fixed' 
-                        ? { fixedCost: value }
-                        : { costPerUnit: value }
+              <>
+                <div className="col-span-2">
+                  <input
+                    type="number"
+                    value={formatNumber(range.endUnits)}
+                    onChange={(e) => {
+                      const newEndUnits = parseNumber(e.target.value);
+                      updateRange(range.id, { endUnits: newEndUnits });
+                      if (ranges[index + 1]) {
+                        updateRange(ranges[index + 1].id, { startUnits: newEndUnits });
+                      }
+                    }}
+                    className="c-input"
+                  />
+                </div>
+                <div className="col-span-3 pl-4 space-y-2">
+                  {products.map(product => {
+                    const rate = productRates.find(r =>
+                      r.productId === product.id && r.rangeId === range.id
                     );
-                  }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeRange(range.id)}
-                  className="text-red-600 hover:text-red-800"
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-              </div>
+                    return (
+                      <div key={product.id} className="flex items-center space-x-4">
+                        <div className="w-1/3">
+                          <label className="block text-sm text-gray-600">
+                            {product.name}
+                          </label>
+                        </div>
+                        <div className="w-2/3 flex items-center space-x-2">
+                          <input
+                            type="number"
+                            value={rate ? formatNumber(rate.costPerUnit) : ''}
+                            onChange={(e) => handleProductRateChange(
+                              product.id,
+                              range.id,
+                              e.target.value
+                            )}
+                            placeholder={`Cost per ${unitType}`}
+                            className="c-input"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <input
+                    type="number"
+                    value={formatNumber(range.endUnits)}
+                    onChange={(e) => {
+                      const newEndUnits = parseNumber(e.target.value);
+                      updateRange(range.id, { endUnits: newEndUnits });
+                      if (ranges[index + 1]) {
+                        updateRange(ranges[index + 1].id, { startUnits: newEndUnits });
+                      }
+                    }}
+                    className="c-input"
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    value={formatNumber(stepType === 'fixed' ? range.fixedCost || 0 : range.costPerUnit || 0)}
+                    onChange={(e) => {
+                      const value = parseNumber(e.target.value);
+                      updateRange(range.id,
+                        stepType === 'fixed'
+                          ? { fixedCost: value }
+                          : { costPerUnit: value }
+                      );
+                    }}
+                    className="c-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeRange(range.id)}
+                    className="text-red-600 hover:text-red-800"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                </div>
+              </>
             )}
           </div>
         ))}

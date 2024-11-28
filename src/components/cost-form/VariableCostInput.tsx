@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Product, ProductSpecificRate } from '../../types';
 
 interface VariableCostInputProps {
@@ -40,23 +39,23 @@ export function VariableCostInput({
                 <div className="w-2/3">
                   <div className="flex items-center space-x-2">
                     <input
-                      type="text"
+                      type="number"
                       value={rate ? formatNumber(rate.costPerUnit) : ''}
                       onChange={(e) => {
                         if (!onProductRatesChange) return;
                         const newRate = parseNumber(e.target.value);
                         const newRates = [...(productRates || [])];
                         const existingIndex = newRates.findIndex(r => r.productId === product.id);
-                        
+
                         if (existingIndex >= 0) {
                           newRates[existingIndex] = { ...newRates[existingIndex], costPerUnit: newRate };
                         } else {
                           newRates.push({ productId: product.id, costPerUnit: newRate });
                         }
-                        
+
                         onProductRatesChange(newRates);
                       }}
-                      className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="c-input"
                       placeholder={`Cost per ${unitType}`}
                     />
                     <span className="text-sm text-gray-500">per {unitType}</span>
@@ -77,10 +76,10 @@ export function VariableCostInput({
       </label>
       <div className="flex items-center space-x-2">
         <input
-          type="text"
+          type="number"
           value={formatNumber(value)}
           onChange={(e) => onChange(parseNumber(e.target.value))}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="c-input"
         />
         <span className="text-sm text-gray-500">per {unitType}</span>
       </div>

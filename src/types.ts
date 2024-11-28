@@ -1,4 +1,4 @@
-import type { TimeUnit } from './types';
+import { FieldValue } from "firebase/firestore";
 
 // Time Units
 export type TimeUnit = 'hour' | 'day' | 'week' | 'month' | 'year';
@@ -38,6 +38,7 @@ export interface Cost {
   productRangeRates?: ProductSpecificRate[];
   // For product-specific costs
   specificToProduct?: string; // Product ID this cost applies to
+  productAllocations?: { [key: string]: number };
 }
 
 // Product Types
@@ -53,15 +54,15 @@ export interface Product {
 export interface Plant {
   id: string;
   name: string;
-  settings?: {
-    unitType: string;
-    customUnitType?: string;
+  settings: {
+    unitType: 'unit' | 'ton' | 'lb' | 'other';
+    customUnitType: string;
     defaultTimeframe: 'month' | 'year';
   };
   costs: Cost[];
   capacityMode: 'fixed' | 'rate';
   capacity?: number;
-  operatingTime?: {
+  operatingTime: {
     hoursPerDay: number;
     daysPerWeek: number;
     weeksPerYear: number;
@@ -152,10 +153,31 @@ export interface SharedUser {
 export interface ConfigurationMeta {
   id: string;
   name: string;
-  config: any;
+  config: PlantConfig;
   userId: string;
   createdAt: string;
-  updatedAt?: string;
+  updatedAt?: string | FieldValue;
   sharedWith: SharedUser[];
   isPublic?: boolean;
 }
+
+export type PlantConfig = {
+  plants: Plant[];
+  products: Product[];
+  semiVariableCost: {
+    baseUnits: number;
+    baseCost: number;
+    scaleFactor: number;
+  };
+  capacity: number;
+  unitType: string;
+  fixedCost: number;
+  variableCostPerUnit: number;
+  manualCostPoints: ManualCostPoint[];
+};
+
+export type ManualCostPoint = {
+  id: string;
+  units: number;
+  cost: number;
+};

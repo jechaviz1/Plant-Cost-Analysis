@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
+import {
   User,
   signInWithPopup,
   signInWithRedirect,
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Set persistence to LOCAL
         await setPersistence(auth, browserLocalPersistence);
-        
+
         // Check for redirect result
         const result = await getRedirectResult(auth, browserPopupRedirectResolver);
         if (result?.user) {
@@ -66,7 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (popupError: any) {
         // If popup fails (blocked or closed), fall back to redirect
-        if (popupError.code === 'auth/popup-blocked' || 
+        if (popupError.code === 'auth/popup-blocked' ||
             popupError.code === 'auth/popup-closed-by-user' ||
             popupError.code === 'auth/cancelled-popup-request') {
           await signInWithRedirect(auth, googleProvider, browserPopupRedirectResolver);

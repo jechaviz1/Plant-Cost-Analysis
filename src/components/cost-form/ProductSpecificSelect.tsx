@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Product } from '../../types';
 
 interface ProductSpecificSelectProps {
@@ -20,7 +19,7 @@ export function ProductSpecificSelect({
       <select
         value={selectedProductId || ''}
         onChange={(e) => onChange(e.target.value)}
-        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+        className="c-input"
       >
         <option value="">Select a product</option>
         {products.map(product => (

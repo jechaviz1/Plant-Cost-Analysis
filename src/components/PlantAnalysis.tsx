@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Layout, AlertCircle, Package } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Layout } from 'lucide-react';
 import { CostForm } from './cost-form';
-import { safeGetUnitType } from '../utils/safeAccess';
 import { ProductCapacityConfig } from './ProductCapacityConfig';
-import { Settings } from './Settings';
 import { ProductAnalysis } from './ProductAnalysis';
 import { PlantProductManagement } from './PlantProductManagement';
 import type { Plant, Product } from '../types';
@@ -15,11 +13,11 @@ interface PlantAnalysisProps {
   onProductsChange: (products: Product[]) => void;
 }
 
-export function PlantAnalysis({ 
-  plant, 
-  products, 
+export function PlantAnalysis({
+  plant,
+  products,
   onChange,
-  onProductsChange 
+  onProductsChange
 }: PlantAnalysisProps) {
   // Ensure plant has settings initialized
   useEffect(() => {
@@ -27,6 +25,7 @@ export function PlantAnalysis({
       onChange({
         settings: {
           unitType: 'unit',
+          customUnitType: 'custom',
           defaultTimeframe: 'year'
         }
       });
@@ -48,7 +47,7 @@ export function PlantAnalysis({
   };
 
   const handleUpdateProduct = (productId: string, updates: Partial<Product>) => {
-    onProductsChange(products.map(p => 
+    onProductsChange(products.map(p =>
       p.id === productId ? { ...p, ...updates } : p
     ));
   };
@@ -71,7 +70,7 @@ export function PlantAnalysis({
           onRemoveProduct={handleRemoveProduct}
         />
       </div>
-      
+
       <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
         <ProductCapacityConfig
           plant={plant}
@@ -79,7 +78,7 @@ export function PlantAnalysis({
           onChange={onChange}
         />
       </div>
-      
+
       <div className="bg-white shadow-xl rounded-lg p-6 border border-gray-100">
         <CostForm
           config={plant}
@@ -87,7 +86,7 @@ export function PlantAnalysis({
           products={products}
         />
       </div>
-      
+
       {products.length > 0 ? (
         <div className="space-y-6">
           <div className="flex items-center space-x-2 mb-4">

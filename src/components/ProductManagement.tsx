@@ -22,7 +22,7 @@ export function ProductManagement({ products, onChange }: ProductManagementProps
   };
 
   const updateProduct = (id: string, updates: Partial<Product>) => {
-    onChange(products.map(p => 
+    onChange(products.map(p =>
       p.id === id ? { ...p, ...updates } : p
     ));
   };
@@ -85,7 +85,7 @@ export function ProductManagement({ products, onChange }: ProductManagementProps
                     const value = e.target.value.replace(/[^\d.]/g, '');
                     updateProduct(product.id, { price: parseNumber(value) });
                   }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
 
@@ -100,7 +100,7 @@ export function ProductManagement({ products, onChange }: ProductManagementProps
                     const value = e.target.value.replace(/[^\d]/g, '');
                     updateProduct(product.id, { demand: parseNumber(value) });
                   }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
 
@@ -115,7 +115,7 @@ export function ProductManagement({ products, onChange }: ProductManagementProps
                     const value = e.target.value.replace(/[^\d]/g, '');
                     updateProduct(product.id, { minProduction: parseNumber(value) });
                   }}
-                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  className="c-input"
                 />
               </div>
             </div>
