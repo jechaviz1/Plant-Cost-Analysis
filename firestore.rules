@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /configurations/{configId} {
+      // Allow read if:
+      // 1. User owns the configuration
+      // 2. Configuration is shared with the user
+      // 3. Configuration is public
+      allow read: if 
+        request.auth != null && (
+          resource.data.userId == request.auth.uid ||
+          resource.data.sharedWith[request.auth.uid] != null ||
+          resource.data.isPublic == true
+        );
+
+      // Allow create if user is authenticated
+      allow create: if 
+        request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+
+      // Allow update if:
+      // 1. User owns the configuration
+      // 2. User has editor role
+      allow update: if 
+        request.auth != null && (
+          resource.data.userId == request.auth.uid ||
+          (
+            resource.data.sharedWith[request.auth.uid].role == 'editor'
+          )
+        );
+
+      // Allow delete only if user owns the configuration
+      allow delete: if 
+        request.auth != null && 
+        resource.data.userId == request.auth.uid;
+    }
+  }
+}
